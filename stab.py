@@ -1,7 +1,7 @@
 import numpy as np
 import cv2
 import sys
-import skvideo
+
 
 vid='vid.mp4'
 border_crop=10
@@ -21,7 +21,7 @@ feature_params = dict( maxCorners = 200,
                        blockSize = 7 )
 
 # Parameters for lucas kanade optical flow
-lk_params = dict( winSize  = (15,15),
+lk_params = dict( winSize  = (50,50),
                   maxLevel = 4,
                   criteria = (cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, 10, 0.03))
 
@@ -35,7 +35,7 @@ ret, old_frame = cap.read()
 if (ret):
     old_gray = cv2.cvtColor(old_frame, cv2.COLOR_BGR2GRAY)
     #old_gray = clahe.apply(old_gray)
-    transformation_matrix_avg = cv2.estimateRigidTransform(old_frame, old_frame, False)
+    
 
 
 rows,cols = old_gray.shape
@@ -82,7 +82,7 @@ while(1):
     # This should return a transformation matrix mapping the points in "new" to "old"
     transformation_matrix = cv2.estimateRigidTransform(new, old, False)
     print("Transform from new frame to old frame...")
-    print(transformation_matrix)
+    
     # Not sure about this...trying to create an smoothed average of the frame movement over the last X frames
     rolling_trajectory_list.append(transformation_matrix)
     if len(rolling_trajectory_list) > smoothing_window:
@@ -112,7 +112,7 @@ while(1):
             
             
     numpy_horizontal_concat = np.concatenate((frame, stabilized_frame), axis=1)
-    cv2.namedWindow('Video', cv2.WINDOW_NORM)
+    cv2.namedWindow('Video', cv2.WINDOW_NORMAL)
     cv2.imshow('Video', numpy_horizontal_concat)
     print(stabilized_frame.shape)
     
